@@ -26,14 +26,19 @@ const defaultConfig = {
   },
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
+    console.log('GET /api/admin/images/config - Start');
     const config = await getImagesConfig();
+    console.log('GET /api/admin/images/config - Success');
     return NextResponse.json(config);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in GET /api/admin/images/config:', error);
     return NextResponse.json(
-      { error: 'Errore nel caricamento configurazione' },
+      { error: 'Errore nel caricamento configurazione', details: error.message },
       { status: 500 }
     );
   }
@@ -41,7 +46,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('POST /api/admin/images/config - Start');
     const { section, key, url } = await request.json();
+    console.log('POST /api/admin/images/config - Updating:', { section, key, url });
     
     const config = await getImagesConfig();
     
@@ -53,11 +60,12 @@ export async function POST(request: NextRequest) {
     
     await saveImagesConfig(config);
     
+    console.log('POST /api/admin/images/config - Success');
     return NextResponse.json({ success: true, config });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in POST /api/admin/images/config:', error);
     return NextResponse.json(
-      { error: 'Errore nel salvataggio' },
+      { error: 'Errore nel salvataggio', details: error.message },
       { status: 500 }
     );
   }
