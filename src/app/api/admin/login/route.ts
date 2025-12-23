@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
 
-    if (username === 'admin' && password === 'admin') {
+    if (username == 'admin' && password == 'admin') {
       return NextResponse.json({
         success: true,
         token: 'admin-token-' + Date.now()
