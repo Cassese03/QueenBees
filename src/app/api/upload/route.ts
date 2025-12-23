@@ -1,12 +1,6 @@
 import { NextResponse } from 'next/server';
 import { uploadImage } from '@/lib/blob-storage';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
