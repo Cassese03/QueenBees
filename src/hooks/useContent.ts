@@ -26,10 +26,17 @@ export function useContent(section: string) {
           console.log(`useContent: Received data for "${section}":`, data);
           
           const contentMap: { [key: string]: string } = {};
-          
-          if (data.contents && Array.isArray(data.contents)) {
-            data.contents.forEach((item: ContentItem) => {
+          if (Array.isArray(data.contents)) {
+            // formato: { contents: [{ key, value }, ...] }
+            data.contents.forEach((item: { key: string; value: string }) => {
               contentMap[item.key] = item.value;
+            });
+          } else {
+            // formato: { slide1_title: '...', slide1_subtitle: '...', ... }
+            Object.entries(data).forEach(([key, value]) => {
+              if (typeof value === "string") {
+                contentMap[key] = value;
+              }
             });
           }
           
