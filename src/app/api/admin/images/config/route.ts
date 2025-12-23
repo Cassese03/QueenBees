@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const CONFIG_FILE = path.join(process.cwd(), 'data', 'images-config.json');
+import { getImagesConfig, saveImagesConfig } from '@/lib/blob-storage';
 
 const defaultConfig = {
   hero: {
@@ -29,37 +26,12 @@ const defaultConfig = {
   },
 };
 
-async function ensureDataDir() {
-  const dir = path.join(process.cwd(), 'data');
-  try {
-    await fs.access(dir);
-  } catch {
-    await fs.mkdir(dir, { recursive: true });
-  }
-}
-
-async function readConfig() {
-  await ensureDataDir();
-  try {
-    await fs.access(CONFIG_FILE);
-    const data = await fs.readFile(CONFIG_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    await fs.writeFile(CONFIG_FILE, JSON.stringify(defaultConfig, null, 2));
-    return defaultConfig;
-  }
-}
-
-async function writeConfig(config: any) {
-  await ensureDataDir();
-  await fs.writeFile(CONFIG_FILE, JSON.stringify(config, null, 2));
-}
-
 export async function GET() {
   try {
-    const config = await readConfig();
+    const config = await getImagesConfig();
     return NextResponse.json(config);
   } catch (error) {
+    console.error('Error in GET /api/admin/images/config:', error);
     return NextResponse.json(
       { error: 'Errore nel caricamento configurazione' },
       { status: 500 }
@@ -71,7 +43,7 @@ export async function POST(request: NextRequest) {
   try {
     const { section, key, url } = await request.json();
     
-    const config = await readConfig();
+    const config = await getImagesConfig();
     
     if (!config[section]) {
       config[section] = {};
@@ -79,10 +51,11 @@ export async function POST(request: NextRequest) {
     
     config[section][key] = url;
     
-    await writeConfig(config);
+    await saveImagesConfig(config);
     
     return NextResponse.json({ success: true, config });
   } catch (error) {
+    console.error('Error in POST /api/admin/images/config:', error);
     return NextResponse.json(
       { error: 'Errore nel salvataggio' },
       { status: 500 }

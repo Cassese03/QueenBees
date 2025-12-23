@@ -39,6 +39,7 @@ export interface ContentData {
 }
 
 const CONTENT_BLOB_PATH = 'data/content.json';
+const IMAGES_CONFIG_BLOB_PATH = 'data/images-config.json';
 
 // Leggi il content.json dal Blob
 export async function getContent(): Promise<ContentData> {
@@ -77,6 +78,44 @@ export async function saveContent(content: ContentData): Promise<void> {
     });
   } catch (error) {
     console.error('Error saving content to Blob:', error);
+    throw error;
+  }
+}
+
+// Leggi images-config.json dal Blob
+export async function getImagesConfig() {
+  try {
+    const { blobs } = await list({ prefix: IMAGES_CONFIG_BLOB_PATH, limit: 1 });
+    
+    if (blobs.length === 0) {
+      const defaultConfig = getDefaultImagesConfig();
+      await saveImagesConfig(defaultConfig);
+      return defaultConfig;
+    }
+
+    const response = await fetch(blobs[0].url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error reading images config from Blob:', error);
+    return getDefaultImagesConfig();
+  }
+}
+
+// Salva images-config.json sul Blob
+export async function saveImagesConfig(config: any): Promise<void> {
+  try {
+    const { blobs } = await list({ prefix: IMAGES_CONFIG_BLOB_PATH, limit: 1 });
+    if (blobs.length > 0) {
+      await del(blobs[0].url);
+    }
+
+    await put(IMAGES_CONFIG_BLOB_PATH, JSON.stringify(config, null, 2), {
+      access: 'public',
+      contentType: 'application/json',
+    });
+  } catch (error) {
+    console.error('Error saving images config to Blob:', error);
     throw error;
   }
 }
@@ -134,5 +173,32 @@ function getDefaultContent(): ContentData {
       address: "Via Example 123, Milano",
       hours: "Lun-Ven: 9:00-19:00"
     }
+  };
+}
+
+function getDefaultImagesConfig() {
+  return {
+    hero: {
+      slide1: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg',
+      slide2: 'https://images.pexels.com/photos/1045523/pexels-photo-1045523.jpeg',
+      slide3: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg',
+    },
+    about: {
+      main: 'https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg',
+    },
+    services: {
+      service1: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg',
+      service2: 'https://images.pexels.com/photos/1045523/pexels-photo-1045523.jpeg',
+      service3: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg',
+      service4: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg',
+    },
+    logo: {
+      main: '/uploads/logo/logo.png',
+      favicon: '/uploads/logo/favicon.png',
+    },
+    chisiamo: {
+      storia: 'https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg',
+      team: 'https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg',
+    },
   };
 }
