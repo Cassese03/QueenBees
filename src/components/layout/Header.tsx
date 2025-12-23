@@ -6,19 +6,21 @@ import { usePathname } from "next/navigation";
 import { MenuOutlined, PhoneOutlined, MailOutlined } from "@ant-design/icons";
 import { Drawer } from "antd";
 import styles from "./Header.module.css";
-import { useContent } from "../../hooks/useContent"; // adatta il path
+import { useContent } from "../../hooks/useContent";
 
 export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // dati dinamici dal blob
   const { content } = useContent("header");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -32,45 +34,64 @@ export default function Header() {
 
   return (
     <>
-      {/* qui incolla il tuo JSX reale dell'header, ad esempio: */}
       <header
         className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}
       >
-        <div className={styles.logo}>{content.logo_text || "Queen Bees"}</div>
+        <div className={styles.container}>
+          {/* Logo */}
+          <Link href="/" className={styles.logo}>
+            {content.logo_text || "Queen Bees"}
+          </Link>
 
-        <nav className={styles.nav}>
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              href={item.path}
-              className={
-                pathname === item.path ? styles.activeLink : styles.link
-              }
+          {/* Desktop Menu */}
+          <nav className={styles.desktopNav}>
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`${styles.navLink} ${
+                  pathname === item.path ? styles.active : ""
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Contact Info */}
+          <div className={styles.contactInfo}>
+            <a
+              href={`tel:${content.header_phone || "0813931794"}`}
+              className={styles.contactItem}
             >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+              <PhoneOutlined />
+              <span>{content.header_phone || "0813931794"}</span>
+            </a>
+            <a
+              href={`mailto:${content.header_email || "info@queenbeesnola.com"}`}
+              className={styles.contactItem}
+            >
+              <MailOutlined />
+              <span>
+                {content.header_email || "info@queenbeesnola.com"}
+              </span>
+            </a>
+          </div>
 
-        <div className={styles.headerContacts}>
-          <a href={`tel:${content.header_phone || "0813931794"}`}>
-            <PhoneOutlined /> {content.header_phone || "0813931794"}
-          </a>
-          <a href={`mailto:${content.header_email || "info@queenbeesnola.com"}`}>
-            <MailOutlined /> {content.header_email || "info@queenbeesnola.com"}
-          </a>
+          {/* Mobile Menu Button */}
+          <button
+            className={styles.mobileMenuButton}
+            onClick={() => setMobileOpen(true)}
+          >
+            <MenuOutlined />
+          </button>
         </div>
-
-        <button
-          className={styles.mobileMenuButton}
-          onClick={() => setMobileOpen(true)}
-        >
-          <MenuOutlined />
-        </button>
       </header>
 
+      {/* Mobile Drawer */}
       <Drawer
-        placement="left"
+        title={content.logo_text || "Queen Bees"}
+        placement="right"
         onClose={() => setMobileOpen(false)}
         open={mobileOpen}
         className={styles.mobileDrawer}
@@ -80,18 +101,32 @@ export default function Header() {
             <Link
               key={item.path}
               href={item.path}
+              className={`${styles.mobileNavLink} ${
+                pathname === item.path ? styles.active : ""
+              }`}
               onClick={() => setMobileOpen(false)}
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className={styles.mobileContacts}>
-          <a href={`tel:${content.header_phone || "0813931794"}`}>
-            <PhoneOutlined /> {content.header_phone || "0813931794"}
+
+        <div className={styles.mobileContact}>
+          <a
+            href={`tel:${content.header_phone || "0813931794"}`}
+            className={styles.mobileContactItem}
+          >
+            <PhoneOutlined />
+            <span>{content.header_phone || "0813931794"}</span>
           </a>
-          <a href={`mailto:${content.header_email || "info@queenbeesnola.com"}`}>
-            <MailOutlined /> {content.header_email || "info@queenbeesnola.com"}
+          <a
+            href={`mailto:${content.header_email || "info@queenbeesnola.com"}`}
+            className={styles.mobileContactItem}
+          >
+            <MailOutlined />
+            <span>
+              {content.header_email || "info@queenbeesnola.com"}
+            </span>
           </a>
         </div>
       </Drawer>
