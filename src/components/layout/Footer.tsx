@@ -11,7 +11,7 @@ import {
 import { Row, Col } from "antd";
 import Link from "next/link";
 import styles from "./Footer.module.css";
-import { useContent } from "../../hooks/useContent"; // <-- correggi il path se diverso
+import { useContent } from "../../hooks/useContent"; // correggi il path se diverso
 
 export default function Footer() {
   const { content } = useContent("footer");
