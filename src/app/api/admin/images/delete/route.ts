@@ -1,30 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { unlink } from 'fs/promises';
-import path from 'path';
+import { deleteImage } from '@/lib/blob-storage';
 
-export async function DELETE(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const { url } = await request.json();
 
-    if (!url || !url.startsWith('/uploads/')) {
+    if (!url) {
       return NextResponse.json(
-        { error: 'URL non valido' },
+        { error: 'URL non fornito' },
         { status: 400 }
       );
     }
 
-    // Rimuovi /uploads/ dall'inizio
-    const relativePath = url.replace('/uploads/', '');
-    const filepath = path.join(process.cwd(), 'public', 'uploads', relativePath);
+    console.log('[POST /api/admin/images/delete] Deleting:', url);
 
-    await unlink(filepath);
+    await deleteImage(url);
 
-    return NextResponse.json({ success: true });
-
-  } catch (error) {
-    console.error('Delete error:', error);
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Immagine eliminata con successo dal Blob' 
+    });
+  } catch (error: any) {
+    console.error('[POST /api/admin/images/delete] Error:', error);
     return NextResponse.json(
-      { error: 'Errore durante eliminazione' },
+      { error: 'Errore eliminazione', details: error.message },
       { status: 500 }
     );
   }

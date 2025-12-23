@@ -1,38 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const IMAGES_FILE = path.join(process.cwd(), 'data', 'images.json');
-
-async function ensureDataDir() {
-  const dir = path.join(process.cwd(), 'data');
-  try {
-    await fs.access(dir);
-  } catch {
-    await fs.mkdir(dir, { recursive: true });
-  }
-}
-
-async function readImages() {
-  await ensureDataDir();
-  try {
-    const data = await fs.readFile(IMAGES_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return { images: [] };
-  }
-}
-
-async function writeImages(data: any) {
-  await ensureDataDir();
-  await fs.writeFile(IMAGES_FILE, JSON.stringify(data, null, 2));
-}
+import { NextResponse } from 'next/server';
+import { list } from '@vercel/blob';
 
 export async function GET() {
   try {
-    const data = await readImages();
-    return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: 'Errore lettura' }, { status: 500 });
+    console.log('[GET /api/admin/content/images] Listing images from Blob');
+    
+    // Lista tutte le immagini dal Blob
+    const { blobs } = await list({
+      prefix: 'uploads/'
+    });
+
+    const images = blobs.map((blob) => ({
+      id: blob.pathname,
+      url: blob.url,
+      name: blob.pathname.split('/').pop(),
+      section: blob.pathname.split('/')[1] || 'general',
+      uploadedAt: blob.uploadedAt,
+      size: blob.size
+    }));
+
+    return NextResponse.json({ 
+      success: true, 
+      images 
+    });
+  } catch (error: any) {
+    console.error('[GET /api/admin/content/images] Error:', error);
+    return NextResponse.json(
+      { error: 'Errore caricamento immagini', details: error.message },
+      { status: 500 }
+    );
   }
 }

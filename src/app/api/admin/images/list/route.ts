@@ -1,47 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { readdir, stat } from 'fs/promises';
-import path from 'path';
+import { NextResponse } from 'next/server';
+import { list } from '@vercel/blob';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const category = searchParams.get('category') || 'general';
+    console.log('[GET /api/admin/images/list] Listing from Blob');
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', category);
+    const { blobs } = await list({
+      prefix: 'uploads/'
+    });
 
-    try {
-      const files = await readdir(uploadDir);
-      
-      const images = await Promise.all(
-        files
-          .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
-          .map(async (file) => {
-            const filepath = path.join(uploadDir, file);
-            const stats = await stat(filepath);
-            
-            return {
-              filename: file,
-              url: `/uploads/${category}/${file}`,
-              size: stats.size,
-              created: stats.birthtime,
-            };
-          })
-      );
+    const images = blobs.map(blob => ({
+      id: blob.pathname,
+      url: blob.url,
+      name: blob.pathname.split('/').pop(),
+      uploadedAt: blob.uploadedAt,
+      size: blob.size
+    }));
 
-      // Ordina per data (più recenti prima)
-      images.sort((a, b) => b.created.getTime() - a.created.getTime());
-
-      return NextResponse.json({ images });
-
-    } catch (error) {
-      // Directory non esiste o vuota
-      return NextResponse.json({ images: [] });
-    }
-
-  } catch (error) {
-    console.error('List error:', error);
+    return NextResponse.json({ 
+      success: true, 
+      images 
+    });
+  } catch (error: any) {
+    console.error('[GET /api/admin/images/list] Error:', error);
     return NextResponse.json(
-      { error: 'Errore nel caricamento immagini' },
+      { error: 'Errore caricamento lista', details: error.message },
       { status: 500 }
     );
   }
