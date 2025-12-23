@@ -50,7 +50,7 @@ export default function PageLoader({ duration = 2000 }: PageLoaderProps) {
               >
                 <Image
                   src="https://lirp.cdn-website.com/78675042/dms3rep/multi/opt/queen_bees-206w.png"
-                  alt="EL.IT Logo"
+                  alt="Logo"
                   width={120}
                   height={120}
                   className={styles.logoImage}
