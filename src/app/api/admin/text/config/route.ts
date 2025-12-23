@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getImagesConfig, saveImagesConfig } from "@/lib/blob-storage";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const defaultConfig = {
   header: [
     { key: "logo_text", value: "Queen Bees", label: "Testo Logo" },
@@ -300,7 +302,11 @@ const defaultConfig = {
       value: "I Nostri Servizi",
       label: "Titolo Servizi",
     },
-    { key: "service1_text", value: "Outlet Moda", label: "Servizio 1 - Testo" },
+    {
+      key: "service1_text",
+      value: "Outlet Moda",
+      label: "Servizio 1 - Testo",
+    },
     {
       key: "service2_text",
       value: "Stock Shoes Outlet",
@@ -357,7 +363,11 @@ const defaultConfig = {
     },
 
     // Outlet Moda
-    { key: "elettrici_title", value: "Outlet Moda", label: "Outlet - Titolo" },
+    {
+      key: "elettrici_title",
+      value: "Outlet Moda",
+      label: "Outlet - Titolo",
+    },
     {
       key: "elettrici_intro",
       value:
@@ -557,7 +567,11 @@ const defaultConfig = {
       value: "Personale qualificato e costantemente aggiornato",
       label: "Valore 2 - Descrizione",
     },
-    { key: "valore3_title", value: "Innovazione", label: "Valore 3 - Titolo" },
+    {
+      key: "valore3_title",
+      value: "Innovazione",
+      label: "Valore 3 - Titolo",
+    },
     {
       key: "valore3_desc",
       value: "Sempre al passo con le ultime tendenze",
@@ -579,7 +593,11 @@ const defaultConfig = {
       value: "Attenzione all'ambiente e alle forniture sostenibili",
       label: "Valore 5 - Descrizione",
     },
-    { key: "valore6_title", value: "Trasparenza", label: "Valore 6 - Titolo" },
+    {
+      key: "valore6_title",
+      value: "Trasparenza",
+      label: "Valore 6 - Titolo",
+    },
     {
       key: "valore6_desc",
       value: "Preventivi chiari e dettagliati, senza sorprese",
@@ -624,10 +642,15 @@ const defaultConfig = {
     },
 
     // CTA Finale
-    { key: "cta_title", value: "Vuoi saperne di più?", label: "CTA - Titolo" },
+    {
+      key: "cta_title",
+      value: "Vuoi saperne di più?",
+      label: "CTA - Titolo",
+    },
     {
       key: "cta_text",
-      value: "Contattaci per ricevere maggiori informazioni sui nostri servizi",
+      value:
+        "Contattaci per ricevere maggiori informazioni sui nostri servizi",
       label: "CTA - Testo",
     },
     { key: "cta_button", value: "Contattaci", label: "CTA - Testo Bottone" },
@@ -678,7 +701,11 @@ const defaultConfig = {
     },
 
     // Orari
-    { key: "hours_title", value: "Orari di Apertura", label: "Orari - Titolo" },
+    {
+      key: "hours_title",
+      value: "Orari di Apertura",
+      label: "Orari - Titolo",
+    },
     {
       key: "hours_weekdays",
       value: "Lunedì – Sabato: 9:00 – 13:00 | 16:00 – 20:30",
@@ -689,7 +716,11 @@ const defaultConfig = {
       value: "Sabato: 9:00 – 13:00 | 16:00 – 20:30",
       label: "Orari Sabato",
     },
-    { key: "hours_sunday", value: "Domenica: Chiuso", label: "Orari Domenica" },
+    {
+      key: "hours_sunday",
+      value: "Domenica: Chiuso",
+      label: "Orari Domenica",
+    },
     {
       key: "hours_emergency",
       value: "Assistenza telefonica disponibile",
@@ -697,7 +728,11 @@ const defaultConfig = {
     },
 
     // Form Contatti
-    { key: "form_title", value: "Invia una Richiesta", label: "Form - Titolo" },
+    {
+      key: "form_title",
+      value: "Invia una Richiesta",
+      label: "Form - Titolo",
+    },
     {
       key: "form_subtitle",
       value: "Compila il form e ti ricontatteremo al più presto",
@@ -750,7 +785,8 @@ const defaultConfig = {
     },
     {
       key: "faq3_a",
-      value: "Sì, offriamo un servizio di assistenza telefonica per emergenze.",
+      value:
+        "Sì, offriamo un servizio di assistenza telefonica per emergenze.",
       label: "FAQ 3 - Risposta",
     },
     {
@@ -763,14 +799,11 @@ const defaultConfig = {
       value: "Sì, tutti i nostri prodotti sono certificati e garantiti.",
       label: "FAQ 4 - Risposta",
     },
-  ],
+  ],           
 };
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 export async function GET() {
   try {
+    
     const config = defaultConfig;
     return NextResponse.json(config);
   } catch (error: any) {

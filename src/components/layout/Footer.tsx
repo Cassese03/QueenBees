@@ -1,135 +1,122 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Row, Col } from 'antd';
-import { 
-  PhoneOutlined, 
-  MailOutlined, 
+import {
+  PhoneOutlined,
+  MailOutlined,
   EnvironmentOutlined,
   FacebookOutlined,
   InstagramOutlined,
-  LinkedinOutlined
-} from '@ant-design/icons';
-import Link from 'next/link';
-import styles from './Footer.module.css';
+  LinkedinOutlined,
+} from "@ant-design/icons";
+import { Row, Col } from "antd";
+import Link from "next/link";
+import styles from "./Footer.module.css";
+import { useContent } from "../../hooks/useContent"; // <-- correggi il path se diverso
 
 export default function Footer() {
-  const [content, setContent] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const response = await fetch('/api/content/footer');
-        if (response.ok) {
-          const data = await response.json();
-          const contentMap: { [key: string]: string } = {};
-          data.contents.forEach((item: any) => {
-            contentMap[item.key] = item.value;
-          });
-          setContent(contentMap);
-        }
-      } catch (error) {
-        console.error('Error loading footer content:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchContent();
-  }, []);
-
+  const { content } = useContent("footer");
   const currentYear = new Date().getFullYear();
+
+  const companyName = content.company_name || "Queen Bees";
+  const companyDescription =
+    content.company_description ||
+    "Abbigliamento e calzature firmate a prezzi outlet, forniture per negozi e servizi B2B.";
+  const linksTitle = content.links_title || "Link Rapidi";
+
+  const phone = content.phone || "0813931794";
+  const email = content.email || "info@queenbeesnola.com";
+  const address =
+    content.address ||
+    "Via Giuseppe Lippiello, 31, 83022 Baiano AV | Via Variante 7/BIS 112, 80035 Nola NA";
+
+  const facebook = content.facebook || "";
+  const instagram = content.instagram || "";
+  const linkedin = content.linkedin || "";
+
+  const copyrightText =
+    content.copyright ||
+    `© ${currentYear} ${companyName} - Tutti i diritti riservati`;
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.container}>
+      <div className={styles.footerTop}>
         <Row gutter={[32, 32]}>
-          {/* Colonna 1: Info Azienda */}
-          <Col xs={24} sm={12} md={6}>
-            <h3 className={styles.title}>
-              {content.company_name || 'EL.IT'}
-            </h3>
-            <p className={styles.description}>
-              {content.company_description || 'Impianti elettrici, domotica ed energie rinnovabili.'}
-            </p>
+          {/* Colonna azienda */}
+          <Col xs={24} md={8}>
+            <h3 className={styles.companyName}>{companyName}</h3>
+            <p className={styles.companyDescription}>{companyDescription}</p>
           </Col>
 
-          {/* Colonna 2: Link Rapidi */}
-          <Col xs={24} sm={12} md={6}>
-            <h3 className={styles.title}>
-              {content.links_title || 'Link Rapidi'}
-            </h3>
-            <ul className={styles.linkList}>
-              <li><Link href="/">{content.link1_text || 'Home'}</Link></li>
-              <li><Link href="/servizi">{content.link2_text || 'Servizi'}</Link></li>
-              <li><Link href="/chi-siamo">{content.link3_text || 'Chi Siamo'}</Link></li>
-              <li><Link href="/contatti">{content.link4_text || 'Contatti'}</Link></li>
-            </ul>
-          </Col>
-
-          {/* Colonna 3: Servizi */}
-          <Col xs={24} sm={12} md={6}>
-            <h3 className={styles.title}>
-              {content.services_title || 'I Nostri Servizi'}
-            </h3>
-            <ul className={styles.linkList}>
-              <li><Link href="/servizi#elettrici">{content.service1_text || 'Impianti Elettrici'}</Link></li>
-              <li><Link href="/servizi#domotica">{content.service2_text || 'Domotica'}</Link></li>
-              <li><Link href="/servizi#rinnovabili">{content.service3_text || 'Energie Rinnovabili'}</Link></li>
-              <li><Link href="/servizi#manutenzione">{content.service4_text || 'Manutenzione'}</Link></li>
+          {/* Colonna link rapidi */}
+          <Col xs={24} md={8}>
+            <h4 className={styles.columnTitle}>{linksTitle}</h4>
+            <ul className={styles.linksList}>
+              <li>
+                <Link href="/">{content.link1_text || "Home"}</Link>
+              </li>
+              <li>
+                <Link href="/servizi">{content.link2_text || "Servizi"}</Link>
+              </li>
+              <li>
+                <Link href="/chi-siamo">
+                  {content.link3_text || "Chi Siamo"}
+                </Link>
+              </li>
+              <li>
+                <Link href="/contatti">{content.link4_text || "Contatti"}</Link>
+              </li>
             </ul>
           </Col>
 
-          {/* Colonna 4: Contatti */}
-          <Col xs={24} sm={12} md={6}>
-            <h3 className={styles.title}>
-              {content.contacts_title || 'Contatti'}
-            </h3>
-            <ul className={styles.contactList}>
-              <li>
-                <PhoneOutlined />
-                <a href={`tel:${content.phone || '+390932768628'}`}>
-                  {content.phone || '+39 0932 768628'}
-                </a>
-              </li>
-              <li>
-                <MailOutlined />
-                <a href={`mailto:${content.email || 'info@elit.it'}`}>
-                  {content.email || 'info@elit.it'}
-                </a>
-              </li>
-              <li>
-                <EnvironmentOutlined />
-                <span>{content.address || 'Via Esempio 123, Roma'}</span>
-              </li>
+          {/* Colonna servizi + contatti */}
+          <Col xs={24} md={8}>
+            <h4 className={styles.columnTitle}>
+              {content.services_title || "I Nostri Servizi"}
+            </h4>
+            <ul className={styles.servicesList}>
+              <li>{content.service1_text || "Outlet Moda"}</li>
+              <li>{content.service2_text || "Stock Shoes Outlet"}</li>
+              <li>{content.service3_text || "Forniture per Rivenditori"}</li>
+              <li>{content.service4_text || "Abbigliamento Cerimonia"}</li>
             </ul>
 
-            {/* Social Media */}
-            <div className={styles.social}>
-              {content.facebook && (
-                <a href={content.facebook} target="_blank" rel="noopener noreferrer">
-                  <FacebookOutlined />
-                </a>
-              )}
-              {content.instagram && (
-                <a href={content.instagram} target="_blank" rel="noopener noreferrer">
-                  <InstagramOutlined />
-                </a>
-              )}
-              {content.linkedin && (
-                <a href={content.linkedin} target="_blank" rel="noopener noreferrer">
-                  <LinkedinOutlined />
-                </a>
-              )}
-            </div>
+            <h4 className={styles.columnTitle}>
+              {content.contacts_title || "Contatti"}
+            </h4>
+            <ul className={styles.contactsList}>
+              <li>
+                <PhoneOutlined /> <a href={`tel:${phone}`}>{phone}</a>
+              </li>
+              <li>
+                <MailOutlined /> <a href={`mailto:${email}`}>{email}</a>
+              </li>
+              <li>
+                <EnvironmentOutlined /> {address}
+              </li>
+            </ul>
           </Col>
         </Row>
+      </div>
 
-        {/* Copyright */}
-        <div className={styles.copyright}>
-          <p>{content.copyright || `© ${currentYear} EL.IT - Tutti i diritti riservati`}</p>
+      <div className={styles.footerBottom}>
+        <div className={styles.socials}>
+          {facebook && (
+            <a href={facebook} target="_blank" rel="noreferrer">
+              <FacebookOutlined />
+            </a>
+          )}
+          {instagram && (
+            <a href={instagram} target="_blank" rel="noreferrer">
+              <InstagramOutlined />
+            </a>
+          )}
+          {linkedin && (
+            <a href={linkedin} target="_blank" rel="noreferrer">
+              <LinkedinOutlined />
+            </a>
+          )}
         </div>
+        <div className={styles.copy}>{copyrightText}</div>
       </div>
     </footer>
   );
