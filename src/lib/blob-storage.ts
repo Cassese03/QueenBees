@@ -45,10 +45,10 @@ const IMAGES_CONFIG_BLOB_PATH = 'data/images-config.json';
 export async function getContent(): Promise<ContentData> {
   try {
     console.log('Fetching content from Blob...');
+    // NON passare token, lo legge automaticamente
     const { blobs } = await list({ 
       prefix: CONTENT_BLOB_PATH,
-      limit: 1,
-      token: process.env.BLOB_READ_WRITE_TOKEN 
+      limit: 1
     });
     
     if (blobs.length === 0) {
@@ -73,23 +73,23 @@ export async function saveContent(content: ContentData): Promise<void> {
   try {
     console.log('Saving content to Blob...');
     
-    // Elimina il vecchio file se esiste
+    // Elimina TUTTI i vecchi file con lo stesso prefix
     const { blobs } = await list({ 
-      prefix: CONTENT_BLOB_PATH,
-      limit: 10,
-      token: process.env.BLOB_READ_WRITE_TOKEN 
+      prefix: 'data/content'  // ← Cambiato per trovare tutti i file content
     });
     
+    console.log(`Found ${blobs.length} old content files to delete`);
+    
     for (const blob of blobs) {
-      console.log('Deleting old blob:', blob.url);
-      await del(blob.url, { token: process.env.BLOB_READ_WRITE_TOKEN });
+      console.log('Deleting old blob:', blob.pathname);
+      await del(blob.url);
     }
 
     // Salva il nuovo contenuto
     const result = await put(CONTENT_BLOB_PATH, JSON.stringify(content, null, 2), {
       access: 'public',
       contentType: 'application/json',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      addRandomSuffix: false  // ← Impedisce di aggiungere suffisso random
     });
     
     console.log('Content saved successfully:', result.url);
@@ -105,8 +105,7 @@ export async function getImagesConfig() {
     console.log('Fetching images config from Blob...');
     const { blobs } = await list({ 
       prefix: IMAGES_CONFIG_BLOB_PATH,
-      limit: 1,
-      token: process.env.BLOB_READ_WRITE_TOKEN 
+      limit: 1
     });
     
     if (blobs.length === 0) {
@@ -131,21 +130,22 @@ export async function saveImagesConfig(config: any): Promise<void> {
   try {
     console.log('Saving images config to Blob...');
     
+    // Elimina TUTTI i vecchi file config
     const { blobs } = await list({ 
-      prefix: IMAGES_CONFIG_BLOB_PATH,
-      limit: 10,
-      token: process.env.BLOB_READ_WRITE_TOKEN 
+      prefix: 'data/images-config'  // ← Cambiato per trovare tutti i config
     });
     
+    console.log(`Found ${blobs.length} old config files to delete`);
+    
     for (const blob of blobs) {
-      console.log('Deleting old config blob:', blob.url);
-      await del(blob.url, { token: process.env.BLOB_READ_WRITE_TOKEN });
+      console.log('Deleting old config blob:', blob.pathname);
+      await del(blob.url);
     }
 
     const result = await put(IMAGES_CONFIG_BLOB_PATH, JSON.stringify(config, null, 2), {
       access: 'public',
       contentType: 'application/json',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      addRandomSuffix: false  // ← Impedisce di aggiungere suffisso random
     });
     
     console.log('Images config saved successfully:', result.url);
@@ -171,8 +171,7 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
     console.log('Upload filename:', filename);
     
     const blob = await put(filename, file, {
-      access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      access: 'public'
     });
 
     console.log('Image uploaded successfully:', blob.url);
@@ -187,7 +186,7 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
 export async function deleteImage(imageUrl: string): Promise<void> {
   try {
     console.log('Deleting image:', imageUrl);
-    await del(imageUrl, { token: process.env.BLOB_READ_WRITE_TOKEN });
+    await del(imageUrl);
     console.log('Image deleted successfully');
   } catch (error) {
     console.error('Error deleting image from Blob:', error);
