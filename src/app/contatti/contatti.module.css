@@ -1,0 +1,179 @@
+.main {
+  min-height: 100vh;
+}
+
+.hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 120px 20px 80px;
+  text-align: center;
+  color: white;
+}
+
+.heroContent h1 {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.heroContent p {
+  font-size: 24px;
+  opacity: 0.95;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.contactSection {
+  padding: 100px 20px;
+  background: white;
+}
+
+.sectionTitle {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.infoCards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.infoCard {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.infoIcon {
+  font-size: 32px;
+  color: #1890ff;
+  margin-bottom: 12px;
+}
+
+.infoCard h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.infoCard p {
+  font-size: 15px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.emergency {
+  color: #ff4d4f !important;
+  font-weight: 600;
+  margin-top: 12px !important;
+}
+
+.formCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.formCard h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.formSubtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.mapSection {
+  height: 450px;
+  background: #f5f5f5;
+}
+
+.mapPlaceholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+  color: #666;
+}
+
+.mapPlaceholder p {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mapPlaceholder small {
+  font-size: 14px;
+}
+
+.faqSection {
+  padding: 100px 20px;
+  background: #f9f9f9;
+}
+
+.faqCollapse {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.faqCollapse :global(.ant-collapse-item) {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.faqCollapse :global(.ant-collapse-header) {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 20px 24px;
+}
+
+.faqCollapse :global(.ant-collapse-content-box) {
+  padding: 16px 24px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 100px 20px 60px;
+  }
+
+  .heroContent h1 {
+    font-size: 32px;
+  }
+
+  .heroContent p {
+    font-size: 18px;
+  }
+
+  .contactSection,
+  .faqSection {
+    padding: 60px 20px;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+  }
+
+  .mapSection {
+    height: 300px;
+  }
+}

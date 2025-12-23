@@ -1,0 +1,99 @@
+.container {
+  max-width: 1200px;
+}
+
+.sectionSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionSelector label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.slots {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.slotCard {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.slotHeader {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.preview {
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.currentUrl {
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+  border: 1px solid #e0e0e0;
+  word-break: break-all;
+}
+
+.inputLabel {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.newPreview {
+  padding: 16px;
+  background: #e6f7ff;
+  border: 2px dashed #1890ff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.newPreview label {
+  font-weight: 600;
+  color: #1890ff;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .preview,
+  .newPreview {
+    padding: 12px;
+  }
+
+  .slotCard {
+    margin-bottom: 16px;
+  }
+}

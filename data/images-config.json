@@ -1,0 +1,24 @@
+{
+  "hero": {
+    "slide1": "/uploads/hero/default1.jpg",
+    "slide2": "/uploads/hero/default2.jpg",
+    "slide3": "/uploads/hero/default3.jpg"
+  },
+  "about": {
+    "main": "/uploads/about/default.jpg"
+  },
+  "services": {
+    "service1": "/uploads/services/elettrici.jpg",
+    "service2": "/uploads/services/domotica.jpg",
+    "service3": "/uploads/services/rinnovabili.jpg",
+    "service4": "/uploads/services/manutenzione.jpg"
+  },
+  "logo": {
+    "main": "/uploads/logo/logo.png",
+    "favicon": "/uploads/logo/favicon.png"
+  },
+  "chisiamo": {
+    "storia": "/uploads/about/storia.jpg",
+    "team": "/uploads/about/team.jpg"
+  }
+}

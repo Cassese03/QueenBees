@@ -1,0 +1,216 @@
+.main {
+  min-height: 100vh;
+}
+
+.hero {
+  height: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+}
+
+.heroContent h1 {
+  font-size: 56px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.heroContent p {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.infoSection {
+  padding: 80px 20px;
+  background: white;
+  margin-top: -60px;
+  position: relative;
+  z-index: 10;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.infoCard {
+  text-align: center;
+  height: 100%;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.infoCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.infoIcon {
+  font-size: 48px;
+  color: #1890ff;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.infoCard h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.infoCard p {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.infoCard a {
+  color: #1890ff;
+  transition: color 0.3s;
+}
+
+.infoCard a:hover {
+  color: #0050b3;
+}
+
+.contactSection {
+  padding: 80px 20px;
+  background: #f5f5f5;
+}
+
+.formWrapper h2,
+.mapWrapper h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.formDescription {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.contactForm {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 64px;
+}
+
+.mapPlaceholder p {
+  font-size: 24px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+.mapPlaceholder small {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.emergencyBox {
+  background: #fff1f0;
+  border: 2px solid #ff4d4f;
+  border-radius: 8px;
+  padding: 25px;
+  text-align: center;
+}
+
+.emergencyBox h3 {
+  font-size: 22px;
+  color: #ff4d4f;
+  margin-bottom: 10px;
+}
+
+.emergencyBox p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.emergencyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 30px;
+  background: #ff4d4f;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.emergencyButton:hover {
+  background: #d9363e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .heroContent h1 {
+    font-size: 36px;
+  }
+
+  .heroContent p {
+    font-size: 18px;
+  }
+
+  .infoSection {
+    padding: 40px 20px;
+    margin-top: -40px;
+  }
+
+  .contactSection {
+    padding: 40px 20px;
+  }
+
+  .contactForm {
+    padding: 20px;
+  }
+
+  .mapPlaceholder {
+    height: 300px;
+    font-size: 48px;
+  }
+}

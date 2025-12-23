@@ -1,0 +1,196 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  z-index: 0;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.logo {
+  text-align: left;
+  margin-bottom: 100px;
+}
+
+.logoText {
+  font-size: 48px;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mainContent {
+  text-align: center;
+  color: white;
+}
+
+.mainTitle {
+  font-size: 64px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 24px;
+  line-height: 1.2;
+  text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.subtitle {
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 48px;
+  font-weight: 400;
+  text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.primaryButton {
+  height: 60px;
+  padding: 0 48px;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: #1890ff;
+  border: none;
+  box-shadow: 0 8px 24px rgba(24, 144, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.primaryButton:hover {
+  background: #40a9ff;
+  box-shadow: 0 12px 32px rgba(24, 144, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.secondaryButton {
+  height: 60px;
+  padding: 0 48px;
+  font-size: 20px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.schedule {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.scrollMouse {
+  width: 28px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  border-radius: 14px;
+  position: relative;
+}
+
+.scrollMouse::before {
+  content: '';
+  width: 6px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+  .logoText {
+    font-size: 36px;
+  }
+
+  .mainTitle {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .schedule {
+    font-size: 14px;
+  }
+}
