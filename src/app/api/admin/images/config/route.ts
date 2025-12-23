@@ -32,7 +32,7 @@ export const revalidate = 0;
 export async function GET() {
   try {
     console.log('GET /api/admin/images/config - Start');
-    const config = await getImagesConfig();
+    const config = defaultConfig;
     console.log('GET /api/admin/images/config - Success');
     return NextResponse.json(config);
   } catch (error: any) {
