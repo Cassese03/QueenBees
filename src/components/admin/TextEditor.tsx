@@ -163,10 +163,10 @@ export default function TextEditor() {
                 label={<strong>{item.label}</strong>}
                 rules={[{ required: true, message: 'Campo obbligatorio' }]}
               >
-                {item.key.includes('description') || 
-                 item.key.includes('desc') || 
-                 item.key.includes('text') || 
-                 item.key.includes('subtitle') ? (
+                {(item.key && (item.key.includes('description') || 
+                  item.key.includes('desc') || 
+                  item.key.includes('text') || 
+                  item.key.includes('subtitle'))) ? (
                   <TextArea 
                     rows={4} 
                     placeholder={item.label}
@@ -176,8 +176,8 @@ export default function TextEditor() {
                 ) : (
                   <Input 
                     placeholder={item.label}
-                    showCount={item.key.includes('title')}
-                    maxLength={item.key.includes('title') ? 100 : undefined}
+                    showCount={!!(item.key && item.key.includes('title'))}
+                    maxLength={item.key && item.key.includes('title') ? 100 : undefined}
                   />
                 )}
               </Form.Item>
