@@ -6,26 +6,26 @@ const CONFIG_FILE = path.join(process.cwd(), 'data', 'images-config.json');
 
 const defaultConfig = {
   hero: {
-    slide1: '/uploads/hero/default1.jpg',
-    slide2: '/uploads/hero/default2.jpg',
-    slide3: '/uploads/hero/default3.jpg',
+    slide1: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg', // Moda uomo/donna
+    slide2: 'https://images.pexels.com/photos/1045523/pexels-photo-1045523.jpeg', // Scarpe outlet
+    slide3: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg', // Stock abbigliamento
   },
   about: {
-    main: '/uploads/about/default.jpg',
+    main: 'https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg', // Team lavoro
   },
   services: {
-    service1: '/uploads/services/elettrici.jpg',
-    service2: '/uploads/services/domotica.jpg',
-    service3: '/uploads/services/rinnovabili.jpg',
-    service4: '/uploads/services/manutenzione.jpg',
+    service1: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg', // Outlet moda
+    service2: 'https://images.pexels.com/photos/1045523/pexels-photo-1045523.jpeg', // Stock Shoes
+    service3: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg', // Forniture rivenditori
+    service4: 'https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg', // Abiti cerimonia
   },
   logo: {
-    main: '/uploads/logo/logo.png',
-    favicon: '/uploads/logo/favicon.png',
+    main: '/uploads/logo/logo.png', // Logo personalizzato, da inserire
+    favicon: '/uploads/logo/favicon.png', // Favicon personalizzato
   },
   chisiamo: {
-    storia: '/uploads/about/storia.jpg',
-    team: '/uploads/about/team.jpg',
+    storia: 'https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg', // Storia azienda
+    team: 'https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg', // Team
   },
 };
 
