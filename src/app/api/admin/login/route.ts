@@ -1,27 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// Credenziali hardcoded (in produzione usa variabili d'ambiente)
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
-    if (email == 'admin' && password == 'admin') {
-      return NextResponse.json({
-        success: true,
-        token: 'admin-token-' + Date.now()
+    // Credenziali hardcoded (in produzione usa database!)
+    if (email === 'admin' && password === 'admin') {
+      // Crea token semplice
+      const token = Buffer.from(`${email}:${Date.now()}`).toString('base64');
+
+      // Setta cookie
+      cookies().set('admin-token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24, // 24 ore
       });
+
+      return NextResponse.json({ success: true });
     }
 
     return NextResponse.json(
       { error: 'Credenziali non valide' },
       { status: 401 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { error: 'Errore login', details: error.message },
+      { error: 'Errore server' },
       { status: 500 }
     );
   }
