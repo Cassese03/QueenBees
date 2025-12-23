@@ -185,39 +185,77 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
 // Elimina un'immagine dal Blob
 export async function deleteImage(imageUrl: string): Promise<void> {
   try {
-    console.log('Deleting image:', imageUrl);
+    console.log('[blob-storage] Deleting image:', imageUrl);
+    
+    if (!imageUrl) {
+      throw new Error('URL immagine vuoto');
+    }
+
     await del(imageUrl);
-    console.log('Image deleted successfully');
-  } catch (error) {
-    console.error('Error deleting image from Blob:', error);
+    
+    console.log('[blob-storage] Image deleted successfully');
+  } catch (error: any) {
+    console.error('[blob-storage] Error deleting image:', error);
+    // Non lanciare errore se l'eliminazione fallisce (l'immagine potrebbe non esistere)
+    if (error.message && !error.message.includes('not found')) {
+      throw error;
+    }
   }
 }
 
 function getDefaultContent(): ContentData {
   return {
     hero: {
-      title: "Queen Bees - Centro Estetico",
-      subtitle: "Il tuo benessere è la nostra missione",
+      title: "Abbigliamento e Calzature Firmate",
+      subtitle: "Outlet Nola e Baiano: moda firmata per tutti",
       cta: "Prenota Ora",
-      image: "/images/hero.jpg"
+      image: "https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg"
     },
     about: {
       title: "Chi Siamo",
-      description: "Queen Bees è un centro estetico all'avanguardia...",
+      description: "Queen Bees è un centro estetico all'avanguardia che offre servizi di alta qualità per il benessere e la bellezza.",
       features: [
-        "Professionisti certificati",
-        "Prodotti di alta qualità",
-        "Ambiente rilassante"
+        "Professionisti certificati con esperienza pluriennale",
+        "Prodotti di alta qualità selezionati",
+        "Ambiente rilassante e accogliente"
       ]
     },
-    services: [],
-    gallery: [],
-    testimonials: [],
+    services: [
+      {
+        id: "service1",
+        title: "Outlet Moda",
+        description: "Abbigliamento firmato a prezzi outlet",
+        image: "https://images.pexels.com/photos/11541986/pexels-photo-11541986.jpeg",
+        link: "#"
+      },
+      {
+        id: "service2",
+        title: "Stock Shoes",
+        description: "Scarpe di marca per negozi",
+        image: "https://images.pexels.com/photos/1045523/pexels-photo-1045523.jpeg",
+        link: "#"
+      }
+    ],
+    gallery: [
+      {
+        id: "gallery1",
+        image: "https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg",
+        caption: "Il nostro store"
+      }
+    ],
+    testimonials: [
+      {
+        id: "test1",
+        name: "Mario Rossi",
+        text: "Ottimo servizio e prezzi competitivi!",
+        rating: 5
+      }
+    ],
     contact: {
       email: "info@queenbees.com",
-      phone: "+39 123 456 7890",
-      address: "Via Example 123, Milano",
-      hours: "Lun-Ven: 9:00-19:00"
+      phone: "+39 081 393 1794",
+      address: "Via Example 123, Nola (NA)",
+      hours: "Lunedì – Sabato: 9:00 – 13:00 | 16:00 – 20:30"
     }
   };
 }

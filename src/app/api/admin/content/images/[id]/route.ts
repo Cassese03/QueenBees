@@ -7,27 +7,37 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    console.log('[DELETE] Deleting image:', id);
+    console.log('[DELETE /api/admin/content/images/[id]] Deleting image id:', id);
 
+    // Prova a prendere l'URL dai query params
     const imageUrl = request.nextUrl.searchParams.get('url');
     
-    if (!imageUrl) {
+    console.log('[DELETE /api/admin/content/images/[id]] URL from params:', imageUrl);
+
+    // Se non c'è l'URL nei query params, usa l'ID come URL (potrebbe essere l'URL completo)
+    const urlToDelete = imageUrl || id;
+    
+    if (!urlToDelete) {
       return NextResponse.json(
         { error: 'URL immagine non fornito' },
         { status: 400 }
       );
     }
 
-    await deleteImage(imageUrl);
+    console.log('[DELETE /api/admin/content/images/[id]] Deleting:', urlToDelete);
+
+    await deleteImage(urlToDelete);
+
+    console.log('[DELETE /api/admin/content/images/[id]] Deleted successfully');
 
     return NextResponse.json({ 
       success: true, 
       message: 'Immagine eliminata con successo dal Blob' 
     });
   } catch (error: any) {
-    console.error('[DELETE] Error:', error);
+    console.error('[DELETE /api/admin/content/images/[id]] Error:', error);
     return NextResponse.json(
-      { error: 'Errore eliminazione', details: error.message },
+      { error: 'Errore eliminazione', details: error.message, stack: error.stack },
       { status: 500 }
     );
   }
