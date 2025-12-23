@@ -6,9 +6,9 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password } = await request.json();
+    const { email, password } = await request.json();
 
-    if (username == 'admin' && password == 'admin') {
+    if (email == 'admin' && password == 'admin') {
       return NextResponse.json({
         success: true,
         token: 'admin-token-' + Date.now()
