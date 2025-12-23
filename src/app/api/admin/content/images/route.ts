@@ -5,12 +5,17 @@ export async function GET() {
   try {
     console.log('[GET /api/admin/content/images] Listing images from Blob');
     
-    // Lista tutte le immagini dal Blob
-    const { blobs } = await list({
-      prefix: 'uploads/'
-    });
+    // Lista TUTTE le immagini senza prefix per debug
+    const { blobs } = await list();
 
-    const images = blobs.map((blob) => ({
+    console.log(`[GET /api/admin/content/images] Found ${blobs.length} total blobs`);
+    
+    // Filtra solo quelle in uploads/
+    const uploadBlobs = blobs.filter(blob => blob.pathname.startsWith('uploads/'));
+    
+    console.log(`[GET /api/admin/content/images] Found ${uploadBlobs.length} upload images`);
+
+    const images = uploadBlobs.map((blob) => ({
       id: blob.pathname,
       url: blob.url,
       name: blob.pathname.split('/').pop(),
@@ -21,7 +26,12 @@ export async function GET() {
 
     return NextResponse.json({ 
       success: true, 
-      images 
+      images,
+      debug: {
+        totalBlobs: blobs.length,
+        uploadBlobs: uploadBlobs.length,
+        allPaths: blobs.map(b => b.pathname)
+      }
     });
   } catch (error: any) {
     console.error('[GET /api/admin/content/images] Error:', error);

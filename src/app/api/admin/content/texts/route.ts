@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     console.log('[GET /api/admin/content/texts] Loading section:', section);
 
-    const content = await getContent();
+    const content = await getContent(); // ✅ Usa Blob
 
     if (section && section !== 'all') {
       // Restituisci solo la sezione richiesta
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     console.log('[POST /api/admin/content/texts] Contents:', contents);
 
     // Carica il contenuto esistente
-    const content = await getContent();
+    const content = await getContent(); // ✅ Usa Blob
 
     // Aggiorna la sezione
     if (section && contents) {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Salva sul Blob
-    await saveContent(content);
+    await saveContent(content); // ✅ Usa Blob
 
     console.log('[POST /api/admin/content/texts] Saved successfully');
 
