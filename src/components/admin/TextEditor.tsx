@@ -41,121 +41,102 @@ export default function TextEditor() {
     loadContents();
   }, [selectedSection]);
 
-  const loadContents = async () => {
-    setLoading(true);
-    console.log('Loading contents for section:', selectedSection);
+const loadContents = async () => {
+  setLoading(true);
+  console.log('Loading contents for section:', selectedSection);
 
-    try {
-      const url = `/api/admin/content/texts?section=${selectedSection}`;
-      console.log('Fetching from:', url);
+  try {
+    const url = `/api/admin/content/texts?section=${selectedSection}`;
+    console.log('Fetching from:', url);
 
-      const response = await fetch(url);
-      console.log('Response status:', response.status);
+    const response = await fetch(url);
+    console.log('Response status:', response.status);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log('Received data:', data);
-
-      setContents(data.contents || []);
-
-
-      const contentMap: { [key: string]: string } = {};
-
-      // Caso A: { contents: [{ key, value }, ...] }  (footer, alcuni blob)
-      if (selectedSection != 'hero' && selectedSection != 'header' && data && Array.isArray((data as any).contents)) {
-        console.log(
-          `useContent: "${selectedSection}" -> using contents[] format, length:`,
-          (data as any).contents.length
-        );
-
-        (data as any).contents.forEach(
-          (item: { key?: string; value?: unknown }, index: number) => {
-            console.log(
-              `useContent: "${selectedSection}" contents[${index}] =`,
-              item
-            );
-            if (!item || typeof item.key !== "string") return;
-            if (typeof item.value === "string") {
-              contentMap[item.key] = item.value;
-            }
-          }
-        );
-
-        // Caso B: data è direttamente un array di { key, value, ... } (header, cta, ecc.)
-      } else if (Array.isArray(data)) {
-        console.log(
-          `useContent: "${selectedSection}" -> using direct array format, length:`,
-          data.length
-        );
-
-        (data as Array<{ key?: string; value?: unknown }>).forEach(
-          (item, index) => {
-            console.log(`useContent: "${selectedSection}" array[${index}] =`, item);
-            if (!item || typeof item.key !== "string") return;
-            if (typeof item.value === "string") {
-              contentMap[item.key] = item.value;
-            }
-          }
-        );
-
-        // Caso C: oggetto piatto { slide1_title: '...', ... } (hero)
-      } else if (data && typeof data === "object" && !Array.isArray(data)) {
-        // Caso C: oggetto piatto { slide1_title: '...', ... } (hero/header)
-        console.log(
-          `useContent: "${selectedSection}" -> using flat object format, keys:`,
-          Object.keys(data as Record<string, unknown>)
-        );
-
-        // Trasforma in array di oggetti { key, value, label }
-        const flatObj = data as Record<string, unknown>;
-        const normalizedContents: TextContent[] = Object.entries(flatObj).map(([key, value]) => ({
-          key,
-          value: typeof value === "string" ? value : "",
-          label: key, // oppure una funzione per generare label leggibili
-          section: selectedSection,
-        }));
-        setContents(normalizedContents);
-
-        // Prepara i valori per il form
-        const contentMap: { [key: string]: string } = {};
-        normalizedContents.forEach(item => {
-          contentMap[item.key] = item.value;
-        });
-        form.setFieldsValue(contentMap);
-        return;
-
-      } else {
-        console.error(
-          `useContent: "${selectedSection}" -> unsupported data format:`,
-          data
-        );
-      }
-
-      console.log(
-        `useContent: Final mapped content for "${selectedSection}":`,
-        contentMap
-      );
-      const formValues: any = contentMap;
-
-      // (data.contents || []).forEach((item: TextContent) => {
-      //   formValues[item.key] = item.value || '';
-      // });
-
-      console.log('Setting form values:', formValues);
-      form.setFieldsValue(formValues);
-
-    } catch (error) {
-      console.error('Load error details:', error);
-      message.error(`Errore: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
-  };
+
+    const data = await response.json();
+    console.log('Received data:', data);
+
+    let normalizedContents: TextContent[] = [];
+    let contentMap: { [key: string]: string } = {};
+
+    // Caso A: { contents: [{ key, value, label }, ...] } (services, footer, ecc.)
+    if (
+      data &&
+      Array.isArray(data.contents) &&
+      data.contents.length > 0 &&
+      typeof data.contents[0].key === "string"
+    ) {
+      normalizedContents = data.contents;
+      normalizedContents.forEach(item => {
+        contentMap[item.key] = item.value;
+      });
+      setContents(normalizedContents);
+    }
+    // Caso B: { contents: [ { slide1_title: "...", ... } ] } (hero, header)
+    else if (
+      data &&
+      Array.isArray(data.contents) &&
+      data.contents.length > 0 &&
+      typeof data.contents[0] === "object"
+    ) {
+      const flatObj = data.contents[0];
+      normalizedContents = Object.entries(flatObj).map(([key, value]) => ({
+        key,
+        value: typeof value === "string" ? value : "",
+        label: key,
+        section: selectedSection,
+      }));
+      normalizedContents.forEach(item => {
+        contentMap[item.key] = item.value;
+      });
+      setContents(normalizedContents);
+    }
+    // Caso C: data è direttamente un array di { key, value, ... } (header, cta, ecc.)
+    else if (Array.isArray(data)) {
+      normalizedContents = data;
+      normalizedContents.forEach(item => {
+        if (item.key) contentMap[item.key] = item.value;
+      });
+      setContents(normalizedContents);
+    }
+    // Caso D: oggetto piatto { slide1_title: '...', ... } (non usato qui, ma per sicurezza)
+    else if (data && typeof data === "object") {
+      normalizedContents = Object.entries(data).map(([key, value]) => ({
+        key,
+        value: typeof value === "string" ? value : "",
+        label: key,
+        section: selectedSection,
+      }));
+      normalizedContents.forEach(item => {
+        contentMap[item.key] = item.value;
+      });
+      setContents(normalizedContents);
+    } else {
+      console.error(
+        `useContent: "${selectedSection}" -> unsupported data format:`,
+        data
+      );
+      setContents([]);
+    }
+
+    console.log(
+      `useContent: Final mapped content for "${selectedSection}":`,
+      contentMap
+    );
+    form.setFieldsValue(contentMap);
+
+  } catch (error) {
+    console.error('Load error details:', error);
+    message.error(`Errore: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const onFinish = async (values: any) => {
     setSaving(true);
