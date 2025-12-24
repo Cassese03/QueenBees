@@ -67,7 +67,7 @@ export default function TextEditor() {
         const contentMap: { [key: string]: string } = {};
 
         // Caso A: { contents: [{ key, value }, ...] }  (footer, alcuni blob)
-        if (data && Array.isArray((data as any).contents)) {
+        if ( selectedSection != 'hero' && selectedSection != 'header'  && data && Array.isArray((data as any).contents)) {
           console.log(
             `useContent: "${selectedSection}" -> using contents[] format, length:`,
             (data as any).contents.length
