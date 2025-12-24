@@ -44,103 +44,111 @@ export default function TextEditor() {
   const loadContents = async () => {
     setLoading(true);
     console.log('Loading contents for section:', selectedSection);
-    
+
     try {
       const url = `/api/admin/content/texts?section=${selectedSection}`;
       console.log('Fetching from:', url);
-      
+
       const response = await fetch(url);
       console.log('Response status:', response.status);
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response:', errorText);
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
-      
+
       const data = await response.json();
       console.log('Received data:', data);
-      
+
       setContents(data.contents || []);
- 
 
-        const contentMap: { [key: string]: string } = {};
 
-        // Caso A: { contents: [{ key, value }, ...] }  (footer, alcuni blob)
-        if ( selectedSection != 'hero' && selectedSection != 'header'  && data && Array.isArray((data as any).contents)) {
-          console.log(
-            `useContent: "${selectedSection}" -> using contents[] format, length:`,
-            (data as any).contents.length
-          );
+      const contentMap: { [key: string]: string } = {};
 
-          (data as any).contents.forEach(
-            (item: { key?: string; value?: unknown }, index: number) => {
-              console.log(
-                `useContent: "${selectedSection}" contents[${index}] =`,
-                item
-              );
-              if (!item || typeof item.key !== "string") return;
-              if (typeof item.value === "string") {
-                contentMap[item.key] = item.value;
-              }
-            }
-          );
-
-          // Caso B: data è direttamente un array di { key, value, ... } (header, cta, ecc.)
-        } else if (Array.isArray(data)) {
-          console.log(
-            `useContent: "${selectedSection}" -> using direct array format, length:`,
-            data.length
-          );
-
-          (data as Array<{ key?: string; value?: unknown }>).forEach(
-            (item, index) => {
-              console.log(`useContent: "${selectedSection}" array[${index}] =`, item);
-              if (!item || typeof item.key !== "string") return;
-              if (typeof item.value === "string") {
-                contentMap[item.key] = item.value;
-              }
-            }
-          );
-
-          // Caso C: oggetto piatto { slide1_title: '...', ... } (hero)
-        } else if (data && typeof data === "object") {
-          console.log(
-            `useContent: "${selectedSection}" -> using flat object format, keys:`,
-            Object.keys(data as Record<string, unknown>)
-          );
-
-          Object.entries(data as Record<string, unknown>).forEach(
-            ([key, value], index) => {
-              console.log(
-                `useContent: "${selectedSection}" flat[${index}] key="${key}" value=`,
-                value
-              );
-              if (typeof value === "string") {
-                contentMap[key] = value;
-              }
-            }
-          );
-        } else {
-          console.error(
-            `useContent: "${selectedSection}" -> unsupported data format:`,
-            data
-          );
-        }
-
+      // Caso A: { contents: [{ key, value }, ...] }  (footer, alcuni blob)
+      if (selectedSection != 'hero' && selectedSection != 'header' && data && Array.isArray((data as any).contents)) {
         console.log(
-          `useContent: Final mapped content for "${selectedSection}":`,
-          contentMap
+          `useContent: "${selectedSection}" -> using contents[] format, length:`,
+          (data as any).contents.length
         );
+
+        (data as any).contents.forEach(
+          (item: { key?: string; value?: unknown }, index: number) => {
+            console.log(
+              `useContent: "${selectedSection}" contents[${index}] =`,
+              item
+            );
+            if (!item || typeof item.key !== "string") return;
+            if (typeof item.value === "string") {
+              contentMap[item.key] = item.value;
+            }
+          }
+        );
+
+        // Caso B: data è direttamente un array di { key, value, ... } (header, cta, ecc.)
+      } else if (Array.isArray(data)) {
+        console.log(
+          `useContent: "${selectedSection}" -> using direct array format, length:`,
+          data.length
+        );
+
+        (data as Array<{ key?: string; value?: unknown }>).forEach(
+          (item, index) => {
+            console.log(`useContent: "${selectedSection}" array[${index}] =`, item);
+            if (!item || typeof item.key !== "string") return;
+            if (typeof item.value === "string") {
+              contentMap[item.key] = item.value;
+            }
+          }
+        );
+
+        // Caso C: oggetto piatto { slide1_title: '...', ... } (hero)
+      } else if (data && typeof data === "object" && !Array.isArray(data)) {
+        // Caso C: oggetto piatto { slide1_title: '...', ... } (hero/header)
+        console.log(
+          `useContent: "${selectedSection}" -> using flat object format, keys:`,
+          Object.keys(data as Record<string, unknown>)
+        );
+
+        // Trasforma in array di oggetti { key, value, label }
+        const flatObj = data as Record<string, unknown>;
+        const normalizedContents: TextContent[] = Object.entries(flatObj).map(([key, value]) => ({
+          key,
+          value: typeof value === "string" ? value : "",
+          label: key, // oppure una funzione per generare label leggibili
+          section: selectedSection,
+        }));
+        setContents(normalizedContents);
+
+        // Prepara i valori per il form
+        const contentMap: { [key: string]: string } = {};
+        normalizedContents.forEach(item => {
+          contentMap[item.key] = item.value;
+        });
+        form.setFieldsValue(contentMap);
+        return;
+
+      } else {
+        console.error(
+          `useContent: "${selectedSection}" -> unsupported data format:`,
+          data
+        );
+      }
+
+      console.log(
+        `useContent: Final mapped content for "${selectedSection}":`,
+        contentMap
+      );
       const formValues: any = contentMap;
- 
-      (data.contents || []).forEach((item: TextContent) => {
-        formValues[item.key] = item.value || '';
-      });
-      
+
+      // (data.contents || []).forEach((item: TextContent) => {
+      //   formValues[item.key] = item.value || '';
+      // });
+
       console.log('Setting form values:', formValues);
       form.setFieldsValue(formValues);
-      
+
     } catch (error) {
       console.error('Load error details:', error);
       message.error(`Errore: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
@@ -176,7 +184,7 @@ export default function TextEditor() {
 
   return (
     <div className={styles.container}>
-      <Card 
+      <Card
         title={
           <div>
             <h2 style={{ margin: 0, fontSize: 20 }}>Gestione Testi del Sito</h2>
@@ -186,8 +194,8 @@ export default function TextEditor() {
           </div>
         }
         extra={
-          <Button 
-            icon={<ReloadOutlined />} 
+          <Button
+            icon={<ReloadOutlined />}
             onClick={loadContents}
             loading={loading}
           >
@@ -233,18 +241,18 @@ export default function TextEditor() {
                 label={<strong>{item.label}</strong>}
                 rules={[{ required: true, message: 'Campo obbligatorio' }]}
               >
-                {(item.key && (item.key.includes('description') || 
-                  item.key.includes('desc') || 
-                  item.key.includes('text') || 
+                {(item.key && (item.key.includes('description') ||
+                  item.key.includes('desc') ||
+                  item.key.includes('text') ||
                   item.key.includes('subtitle'))) ? (
-                  <TextArea 
-                    rows={4} 
+                  <TextArea
+                    rows={4}
                     placeholder={item.label}
                     showCount
                     maxLength={500}
                   />
                 ) : (
-                  <Input 
+                  <Input
                     placeholder={item.label}
                     showCount={!!(item.key && item.key.includes('title'))}
                     maxLength={item.key && item.key.includes('title') ? 100 : undefined}
@@ -254,9 +262,9 @@ export default function TextEditor() {
             ))}
 
             <Form.Item>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
+              <Button
+                type="primary"
+                htmlType="submit"
                 icon={<SaveOutlined />}
                 loading={saving}
                 size="large"
