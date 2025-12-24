@@ -62,8 +62,78 @@ export default function TextEditor() {
       console.log('Received data:', data);
       
       setContents(data.contents || []);
-      
-      const formValues: any = {};
+ 
+
+        const contentMap: { [key: string]: string } = {};
+
+        // Caso A: { contents: [{ key, value }, ...] }  (footer, alcuni blob)
+        if (data && Array.isArray((data as any).contents)) {
+          console.log(
+            `useContent: "${selectedSection}" -> using contents[] format, length:`,
+            (data as any).contents.length
+          );
+
+          (data as any).contents.forEach(
+            (item: { key?: string; value?: unknown }, index: number) => {
+              console.log(
+                `useContent: "${selectedSection}" contents[${index}] =`,
+                item
+              );
+              if (!item || typeof item.key !== "string") return;
+              if (typeof item.value === "string") {
+                contentMap[item.key] = item.value;
+              }
+            }
+          );
+
+          // Caso B: data è direttamente un array di { key, value, ... } (header, cta, ecc.)
+        } else if (Array.isArray(data)) {
+          console.log(
+            `useContent: "${selectedSection}" -> using direct array format, length:`,
+            data.length
+          );
+
+          (data as Array<{ key?: string; value?: unknown }>).forEach(
+            (item, index) => {
+              console.log(`useContent: "${selectedSection}" array[${index}] =`, item);
+              if (!item || typeof item.key !== "string") return;
+              if (typeof item.value === "string") {
+                contentMap[item.key] = item.value;
+              }
+            }
+          );
+
+          // Caso C: oggetto piatto { slide1_title: '...', ... } (hero)
+        } else if (data && typeof data === "object") {
+          console.log(
+            `useContent: "${selectedSection}" -> using flat object format, keys:`,
+            Object.keys(data as Record<string, unknown>)
+          );
+
+          Object.entries(data as Record<string, unknown>).forEach(
+            ([key, value], index) => {
+              console.log(
+                `useContent: "${selectedSection}" flat[${index}] key="${key}" value=`,
+                value
+              );
+              if (typeof value === "string") {
+                contentMap[key] = value;
+              }
+            }
+          );
+        } else {
+          console.error(
+            `useContent: "${selectedSection}" -> unsupported data format:`,
+            data
+          );
+        }
+
+        console.log(
+          `useContent: Final mapped content for "${selectedSection}":`,
+          contentMap
+        );
+      const formValues: any = contentMap;
+ 
       (data.contents || []).forEach((item: TextContent) => {
         formValues[item.key] = item.value || '';
       });
