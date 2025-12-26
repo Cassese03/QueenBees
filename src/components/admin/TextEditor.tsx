@@ -154,7 +154,7 @@ export default function TextEditor() {
       });
 
       if (response.ok) {
-        message.success("Contenuti salvati con successo! Aggiornamento tra 10 secondi...");
+        message.success("Contenuti salvati con successo! Clicca su Ricarica tra 20 - 30 secondi...");
         // Attendi 10 secondi per la propagazione del blob su Vercel
         setTimeout(() => {
           loadContents();
